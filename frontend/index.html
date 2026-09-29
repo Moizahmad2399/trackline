@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trackline: order tracking and live support</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--chalk:#F1F4EE;--card:#FAFBF7;--ink:#12241F;--muted:#5E6F68;--line:#D3DAD0;--pine:#1D5A4A;--soft:#DDEBE4;--gold:#F0B429;--coral:#D4462A;--mint:#7FD1B4;--display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;--body:"Figtree","Segoe UI",system-ui,sans-serif}
+*{box-sizing:border-box;margin:0}
+body{font:16px/1.5 var(--body);background:var(--chalk);color:var(--ink)}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--pine);outline-offset:2px}
+.tracker :focus-visible{outline-color:var(--gold)}
+small,.none{color:var(--muted);font-size:13px}
+.top{display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:14px clamp(16px,3vw,32px);background:var(--card);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font:800 24px/1 var(--display);letter-spacing:-.02em}
+.seg{display:inline-flex;padding:3px;border:1px solid var(--line);border-radius:999px;background:var(--chalk)}
+.seg button{border:0;background:none;padding:7px 16px;border-radius:999px;cursor:pointer;font-weight:600;color:var(--muted)}
+.seg [aria-selected=true]{background:var(--ink);color:var(--chalk)}
+.conn{margin-left:auto;display:flex;gap:14px;font-size:13px;color:var(--muted)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.chip::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--coral)}
+.chip[data-up=true]::before{background:#2E9E7A}
+#alert{display:flex;justify-content:space-between;gap:12px;padding:10px clamp(16px,3vw,32px);font-weight:600;background:var(--soft)}
+#alert[hidden]{display:none}
+#alert[data-level=warning]{background:#FBEBC0}
+#alert[data-level=success]{background:#CDEBDD}
+#alert button{background:none;border:0;cursor:pointer;font-size:20px;line-height:1}
+.layout{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:24px;max-width:1280px;margin:0 auto;padding:24px clamp(16px,3vw,32px) 48px;align-items:start}
+@media(max-width:860px){.layout{grid-template-columns:1fr}}
+.side,.detail{display:grid;gap:20px;min-width:0}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.panel h2{font:700 18px/1.2 var(--display);margin-bottom:12px}
+body[data-role=agent] .cust,body[data-role=customer] .agent{display:none}
+ul{list-style:none;padding:0}
+#catalog li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+#catalog li:first-child{border-top:0}
+#catalog strong{display:block;font-weight:600}
+.step{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.step button{width:30px;height:30px;border:0;background:var(--chalk);cursor:pointer;font-size:16px}
+.step output{min-width:28px;text-align:center;font-weight:600}
+.cart{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);display:grid;gap:10px}
+.cart div{display:flex;justify-content:space-between;font-weight:600}
+.field{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.inline{display:flex;gap:8px;margin-bottom:12px}
+.btn{border:1px solid transparent;border-radius:10px;padding:10px 16px;font-weight:600;cursor:pointer;background:var(--pine);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:none;color:inherit;border-color:var(--line)}
+.btn.go{background:var(--gold);color:var(--ink)}
+#orders{display:grid;gap:6px}
+.row{width:100%;display:grid;grid-template-columns:1fr auto;gap:2px 10px;text-align:left;padding:10px 12px;border:1px solid var(--line);border-left-width:4px;border-radius:12px;background:#fff;cursor:pointer}
+.row[aria-current=true]{border-color:var(--pine);background:var(--soft)}
+.row b{font:700 16px var(--display)}
+.pill{justify-self:end;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;background:var(--soft);color:var(--pine)}
+.pill[data-s=out_for_delivery]{background:#FBEBC0;color:#6B4B00}
+.pill[data-s=delivered]{background:var(--pine);color:#fff}
+.pill[data-s=cancelled]{background:#F8DDD5;color:#7C2412}
+.tracker{background:var(--ink);color:var(--chalk);border-radius:20px;padding:clamp(20px,3vw,32px)}
+.thead{display:flex;justify-content:space-between;gap:16px}
+.tracker h2{font:800 clamp(30px,5vw,44px)/1 var(--display);letter-spacing:-.03em}
+.tracker p{color:rgba(241,244,238,.75)}
+.tracker .pill{background:var(--gold);color:var(--ink);font-size:13px;padding:5px 12px;align-self:flex-start}
+.tracker .pill[data-s=delivered]{background:var(--mint)}
+.tracker .pill[data-s=cancelled]{background:var(--coral);color:#fff}
+.route{--p:0;position:relative;margin:36px 0 26px}
+.rail{position:absolute;left:10%;right:10%;top:9px;height:4px;border-radius:4px;background:rgba(255,255,255,.16)}
+.rail i{position:absolute;inset:0 auto 0 0;width:calc(var(--p)*100%);background:var(--mint);border-radius:4px;transition:width .9s cubic-bezier(.4,0,.2,1)}
+.rail b{position:absolute;z-index:2;top:50%;left:calc(var(--p)*100%);width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:var(--gold);border:4px solid var(--ink);box-shadow:0 0 0 2px var(--gold);transition:left .9s cubic-bezier(.4,0,.2,1)}
+.dead .rail i{background:var(--coral)}
+.dead .rail b{background:var(--coral);box-shadow:0 0 0 2px var(--coral)}
+.route[data-status=out_for_delivery] .rail b{animation:pulse 1.8s ease-out infinite}
+@keyframes pulse{to{box-shadow:0 0 0 2px var(--gold),0 0 0 16px rgba(240,180,41,0)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+ol{list-style:none;padding:0;display:grid;grid-template-columns:repeat(5,1fr)}
+ol li{display:grid;justify-items:center;gap:6px;text-align:center;font-weight:600;font-size:14px;color:rgba(241,244,238,.55)}
+ol li.done,ol li.now{color:var(--chalk)}
+ol small{color:rgba(241,244,238,.6);min-height:18px}
+.dot{position:relative;z-index:1;width:22px;height:22px;border-radius:50%;background:var(--ink);border:3px solid rgba(255,255,255,.25)}
+.done .dot{background:var(--mint);border-color:var(--mint)}
+.tfoot{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.14);padding-top:18px}
+.tfoot strong{font:700 22px var(--display)}
+.acts{display:flex;gap:10px;flex-wrap:wrap}
+.tracker .ghost{border-color:rgba(255,255,255,.35)}
+.chat{padding:0;overflow:hidden}
+.chead{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+.chead h2{margin:0}
+.msgs{height:320px;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:8px;background:#fff}
+.bubble{max-width:75%;padding:8px 12px;border-radius:14px;overflow-wrap:anywhere}
+.bubble.mine{align-self:flex-end;background:var(--pine);color:#fff;border-bottom-right-radius:4px}
+.bubble.theirs{align-self:flex-start;background:var(--soft);border-bottom-left-radius:4px}
+.bubble.system{align-self:center;background:none;color:var(--muted);font-size:13px;padding:2px}
+.bubble b{display:block;font-size:12px;opacity:.75}
+.bubble time{display:block;font-size:11px;opacity:.65}
+#cf{display:flex;gap:8px;padding:12px 18px;border-top:1px solid var(--line)}
+.empty{padding:56px 24px;text-align:center;border:1.5px dashed var(--line);border-radius:20px;color:var(--muted)}
+.empty h2{font:700 24px var(--display);color:var(--ink);margin-bottom:6px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--ink);color:var(--chalk);padding:10px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;max-width:90vw}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+#toast[data-err=true]{background:var(--coral)}
+</style>
+</head>
+<body data-role="customer">
+<header class="top">
+  <div class="brand"><svg width="34" height="20" viewBox="0 0 34 20" aria-hidden="true"><circle cx="5" cy="10" r="4" fill="#1D5A4A"/><path d="M9 10h16" stroke="#1D5A4A" stroke-width="2"/><circle cx="29" cy="10" r="4" fill="#F0B429"/></svg>Trackline</div>
+  <div class="seg" role="tablist" aria-label="View as">
+    <button role="tab" data-r="customer" aria-selected="true">Customer</button>
+    <button role="tab" data-r="agent" aria-selected="false">Support agent</button>
+  </div>
+  <div class="conn">
+    <span class="chip" id="c-api" data-up="false">API</span>
+    <span class="chip" id="c-ws" data-up="false">WebSocket</span>
+    <span class="chip" id="c-sse" data-up="false">Live alerts</span>
+  </div>
+</header>
+<div id="alert" hidden role="status"><span id="alertText"></span><button aria-label="Dismiss alert" onclick="this.parentNode.hidden=true">×</button></div>
+<main class="layout">
+  <aside class="side">
+    <section class="panel cust">
+      <h2>Shop</h2>
+      <ul id="catalog"></ul>
+      <div class="cart">
+        <input class="field" id="name" placeholder="Your name" autocomplete="name">
+        <div><span>Total</span><span id="total">Rs 0</span></div>
+        <button class="btn" id="place" disabled>Place order</button>
+      </div>
+    </section>
+    <section class="panel">
+      <h2 id="otitle">Orders</h2>
+      <form id="track" class="inline cust"><input class="field" id="tid" placeholder="Track by ID, e.g. ORD-1001"><button class="btn ghost">Track</button></form>
+      <ul id="orders"></ul>
+    </section>
+  </aside>
+  <section class="detail" id="detail"></section>
+</main>
+<div id="toast" role="status"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+<script>
+// Set your deployed backend URL (Render/Railway) here, no trailing slash.
+const API = ["localhost", "127.0.0.1"].includes(location.hostname) ? "http://localhost:4000" : "https://YOUR-BACKEND.onrender.com";
+
+const STEPS = [["placed","Placed"],["confirmed","Confirmed"],["packed","Packed"],["out_for_delivery","On the way"],["delivered","Delivered"]];
+const S = { role: "customer", orders: new Map(), sel: null, cart: {}, catalog: [], mine: JSON.parse(localStorage.mine || "[]") };
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => "&#" + c.charCodeAt(0) + ";");
+const rs = (n) => "Rs " + n.toLocaleString("en-PK");
+const hm = (t) => new Date(t).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+const lab = (k) => (k === "cancelled" ? "Cancelled" : STEPS.find((s) => s[0] === k)[1]);
+const up = (k, v) => ($("#c-" + k).dataset.up = v);
+const total = () => S.catalog.reduce((s, p) => s + p.price * (S.cart[p.sku] || 0), 0);
+
+function toast(m, err) {
+  const t = $("#toast");
+  t.textContent = m; t.dataset.err = !!err; t.classList.add("show");
+  clearTimeout(t.h); t.h = setTimeout(() => t.classList.remove("show"), 3200);
+}
+async function api(p, o = {}) {
+  const r = await fetch(API + p, { ...o, headers: o.body ? { "Content-Type": "application/json" } : {} });
+  const d = await r.json();
+  if (!r.ok) throw Error(d.error || "Request failed");
+  return d;
+}
+async function rpc(method, params) {
+  const r = await fetch(API + "/rpc", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", method, params, id: Date.now() }) });
+  const d = await r.json();
+  if (d.error) throw Error(d.error.message);
+  return d.result;
+}
+
+/* ---- WebSocket ---- */
+const socket = io(API, { transports: ["websocket", "polling"] });
+socket.on("connect", () => { up("ws", true); if (S.role === "agent") socket.emit("agent_join"); join(); });
+socket.on("disconnect", () => up("ws", false));
+socket.on("connect_error", () => up("ws", false));
+socket.on("order_created", (o) => { S.orders.set(o.id, o); list(); });
+socket.on("order_status_update", (o) => {
+  S.orders.set(o.id, o); list();
+  if (o.id === S.sel) paint(o); else toast(`${o.id} is now ${lab(o.status).toLowerCase()}`);
+});
+socket.on("chat_history", (d) => { if (d.orderId !== S.sel) return; $("#msgs").innerHTML = ""; d.messages.forEach(bubble); });
+socket.on("chat_message", bubble);
+socket.on("presence", (p) => {
+  const el = $("#pres");
+  if (!el || p.orderId !== S.sel) return;
+  const on = S.role === "agent" ? p.customer : p.agent;
+  el.dataset.up = on;
+  el.textContent = S.role === "agent" ? (on ? "Customer is online" : "Customer is offline") : (on ? "An agent is online" : "Waiting for an agent");
+});
+socket.on("room_replaced", () => toast("This chat was opened in another tab", true));
+
+/* ---- SSE ---- */
+const es = new EventSource(API + "/events");
+es.onopen = () => up("sse", true);
+es.onerror = () => up("sse", false);
+es.addEventListener("alert", (e) => {
+  const a = JSON.parse(e.data), b = $("#alert");
+  b.hidden = false; b.dataset.level = a.level; $("#alertText").textContent = a.message;
+  clearTimeout(b.h); b.h = setTimeout(() => (b.hidden = true), 9000);
+});
+
+/* ---- views ---- */
+function shop() {
+  $("#catalog").innerHTML = S.catalog.map((p) => `<li><div><strong>${esc(p.name)}</strong><small>${rs(p.price)}</small></div><div class="step"><button data-s="${p.sku}" data-d="-1" aria-label="Remove one ${esc(p.name)}">−</button><output>${S.cart[p.sku] || 0}</output><button data-s="${p.sku}" data-d="1" aria-label="Add one ${esc(p.name)}">+</button></div></li>`).join("");
+  $("#total").textContent = rs(total());
+  $("#place").disabled = !total();
+}
+function list() {
+  const all = [...S.orders.values()].filter((o) => S.role === "agent" || S.mine.includes(o.id)).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  $("#otitle").textContent = S.role === "agent" ? "All orders" : "Your orders";
+  $("#orders").innerHTML = all.map((o) => `<li><button class="row" data-id="${o.id}" aria-current="${o.id === S.sel}"><b>${o.id}</b><span class="pill" data-s="${o.status}">${lab(o.status)}</span><small>${esc(o.customerName)}</small><small>${rs(o.total)}</small></button></li>`).join("") || `<li class="none">No orders yet.</li>`;
+}
+function detail() {
+  const o = S.orders.get(S.sel), b = $("#detail");
+  if (!o) {
+    b.innerHTML = `<div class="empty"><h2>Pick an order to follow it live</h2><p>${S.role === "agent" ? "Orders appear here as customers place them." : "Place an order, or track one by ID, for example ORD-1001."}</p></div>`;
+    return;
+  }
+  b.innerHTML = `<article class="tracker"><div class="thead"><div><h2>${o.id}</h2><p>${esc(o.customerName)}, placed at ${hm(o.createdAt)}</p></div><span class="pill" id="pill"></span></div>
+  <div class="route" id="route"><div class="rail"><i></i><b></b></div><ol>${STEPS.map((s) => `<li><span class="dot"></span><span>${s[1]}</span><small></small></li>`).join("")}</ol></div>
+  <div class="tfoot"><div><p>${o.items.map((i) => `${i.qty} × ${esc(i.name)}`).join(", ")}</p><strong>${rs(o.total)}</strong></div><div class="acts" id="acts"></div></div></article>
+  <section class="panel chat"><div class="chead"><h2>Live chat</h2><span class="chip" id="pres" data-up="false">Connecting</span></div><div class="msgs" id="msgs"></div>
+  <form id="cf"><input class="field" id="ci" placeholder="${S.role === "agent" ? "Reply to the customer" : "Ask about your order"}" autocomplete="off" maxlength="500"><button class="btn">Send</button></form></section>`;
+  paint(o);
+}
+function paint(o) {
+  const r = $("#route");
+  if (!r) return;
+  const at = Math.max(...o.history.map((h) => STEPS.findIndex((s) => s[0] === h.status)));
+  r.classList.toggle("dead", o.status === "cancelled");
+  r.dataset.status = o.status; r.style.setProperty("--p", at / 4);
+  r.querySelectorAll("li").forEach((li, i) => {
+    li.className = i < at || (i === at && o.status === "delivered") ? "done" : i === at ? "now" : "";
+    const h = o.history.find((x) => x.status === STEPS[i][0]);
+    li.querySelector("small").textContent = h ? hm(h.at) : "";
+  });
+  const p = $("#pill"); p.textContent = lab(o.status); p.dataset.s = o.status;
+  const open = !["cancelled", "delivered"].includes(o.status);
+  const next = open && STEPS[STEPS.findIndex((s) => s[0] === o.status) + 1];
+  $("#acts").innerHTML = (S.role === "agent" && next ? `<button class="btn go" data-a="next" data-k="${next[0]}">Mark as ${next[1].toLowerCase()}</button>` : "")
+    + (open && o.status !== "out_for_delivery" ? `<button class="btn ghost" data-a="cancel">Cancel order</button>` : "");
+}
+function bubble(m) {
+  const box = $("#msgs");
+  if (!box || m.orderId !== S.sel) return;
+  const d = document.createElement("div");
+  d.className = "bubble " + (m.role === "system" ? "system" : m.role === S.role ? "mine" : "theirs");
+  d.innerHTML = m.role === "system" ? esc(m.text) : `<b>${esc(m.name)}</b>${esc(m.text)}<time>${hm(m.at)}</time>`;
+  box.appendChild(d); box.scrollTop = box.scrollHeight;
+}
+function join() {
+  const o = S.orders.get(S.sel);
+  if (!o || !socket.connected) return;
+  socket.emit("join_order_room", { orderId: o.id, role: S.role, name: S.role === "agent" ? "Support" : o.customerName }, (r) => { if (!r.ok) toast(r.error, true); });
+}
+function select(id) { S.sel = id; list(); detail(); join(); }
+async function sync() {
+  try {
+    if (S.role === "agent") (await api("/api/v1/orders")).forEach((o) => S.orders.set(o.id, o));
+    else S.mine = (await Promise.all(S.mine.map((id) => api("/api/v1/orders/" + id).then((o) => (S.orders.set(id, o), id), () => null)))).filter(Boolean);
+  } catch {}
+  list(); detail();
+}
+function setRole(r) {
+  S.role = r; S.sel = null; document.body.dataset.role = r;
+  document.querySelectorAll("[data-r]").forEach((b) => b.setAttribute("aria-selected", b.dataset.r === r));
+  socket.emit("leave_order_room");
+  socket.emit(r === "agent" ? "agent_join" : "agent_leave");
+  sync();
+}
+
+/* ---- events ---- */
+document.querySelectorAll("[data-r]").forEach((b) => (b.onclick = () => setRole(b.dataset.r)));
+$("#catalog").onclick = (e) => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  S.cart[b.dataset.s] = Math.max(0, Math.min(20, (S.cart[b.dataset.s] || 0) + +b.dataset.d));
+  shop();
+};
+$("#place").onclick = async () => {
+  const name = $("#name").value.trim();
+  if (!name) { toast("Enter your name first", true); return $("#name").focus(); }
+  try {
+    const items = Object.entries(S.cart).filter(([, q]) => q > 0).map(([sku, qty]) => ({ sku, qty }));
+    const o = await api("/api/v1/orders", { method: "POST", body: JSON.stringify({ customerName: name, items }) });
+    S.mine.unshift(o.id); localStorage.mine = JSON.stringify(S.mine);
+    S.orders.set(o.id, o); S.cart = {}; shop(); select(o.id);
+    toast(`Order ${o.id} placed`);
+  } catch (x) { toast(x.message, true); }
+};
+$("#track").onsubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const o = await api("/api/v1/orders/" + $("#tid").value.trim().toUpperCase());
+    if (!S.mine.includes(o.id)) { S.mine.unshift(o.id); localStorage.mine = JSON.stringify(S.mine); }
+    S.orders.set(o.id, o); $("#tid").value = ""; select(o.id);
+  } catch (x) { toast(x.message, true); }
+};
+$("#orders").onclick = (e) => { const b = e.target.closest("[data-id]"); if (b) select(b.dataset.id); };
+$("#detail").onclick = async (e) => {
+  const b = e.target.closest("[data-a]");
+  if (!b) return;
+  try {
+    const cancel = b.dataset.a === "cancel";
+    const o = cancel ? await rpc("cancelOrder", { orderId: S.sel }) : await api(`/api/v1/orders/${S.sel}/status`, { method: "PATCH", body: JSON.stringify({ status: b.dataset.k }) });
+    S.orders.set(o.id, o); list(); paint(o);
+    if (cancel) toast("Order cancelled");
+  } catch (x) { toast(x.message, true); }
+};
+$("#detail").onsubmit = (e) => {
+  e.preventDefault();
+  const i = $("#ci");
+  if (i.value.trim()) socket.emit("chat_message", { text: i.value });
+  i.value = "";
+};
+
+(async () => {
+  try { S.catalog = await api("/api/v1/catalog"); up("api", true); }
+  catch { toast("Can't reach the server. On Render's free tier it can take a minute to wake up, so refresh shortly.", true); }
+  shop(); setRole("customer");
+})();
+</script>
+</body>
+</html>
