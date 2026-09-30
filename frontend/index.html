@@ -61,9 +61,12 @@ ul{list-style:none;padding:0}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--sh)}
 .panel h2{font:700 18px/1.2 var(--display);margin-bottom:14px}
 body[data-role=agent] .cust,body[data-role=customer] .agent{display:none}
-#catalog li{display:grid;grid-template-columns:42px 1fr auto;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+#catalog li{display:grid;grid-template-columns:48px 1fr auto;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
 #catalog li:first-child{border-top:0}
-.ph{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font:800 18px var(--display);background:linear-gradient(135deg,var(--soft),#CBE3D8);color:var(--pine)}
+.ph{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;font:800 18px var(--display);background:linear-gradient(135deg,var(--soft),#CBE3D8);color:var(--pine)}
+img.ph{display:block;object-fit:cover;box-shadow:0 1px 3px rgba(15,33,28,.12)}
+.it{display:flex;align-items:center;gap:10px}
+.th{width:38px;height:38px;border-radius:10px;flex:none}
 #catalog strong{display:block;font-weight:600;line-height:1.3}
 .step{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;overflow:hidden}
 .step button{width:30px;height:30px;border:0;background:var(--chalk);cursor:pointer;font-size:16px}
@@ -251,7 +254,7 @@ es.addEventListener("alert", (e) => {
 
 /* ---- views ---- */
 function shop() {
-  $("#catalog").innerHTML = S.catalog.map((p) => `<li><span class="ph">${esc(p.name[0])}</span><div><strong>${esc(p.name)}</strong><small>${rs(p.price)}</small></div><div class="step"><button data-s="${p.sku}" data-d="-1" aria-label="Remove one ${esc(p.name)}">−</button><output>${S.cart[p.sku] || 0}</output><button data-s="${p.sku}" data-d="1" aria-label="Add one ${esc(p.name)}">+</button></div></li>`).join("");
+  $("#catalog").innerHTML = S.catalog.map((p) => `<li><img class="ph" src="images/${p.sku}.svg" alt=""><div><strong>${esc(p.name)}</strong><small>${rs(p.price)}</small></div><div class="step"><button data-s="${p.sku}" data-d="-1" aria-label="Remove one ${esc(p.name)}">−</button><output>${S.cart[p.sku] || 0}</output><button data-s="${p.sku}" data-d="1" aria-label="Add one ${esc(p.name)}">+</button></div></li>`).join("");
   $("#total").textContent = rs(total());
   $("#place").disabled = !total();
 }
@@ -287,7 +290,7 @@ function detail() {
   <div class="tfoot"><p>${o.items.reduce((s, i) => s + i.qty, 0)} items</p><div class="acts" id="acts"></div></div></article>
   <div class="split"><section class="panel chat"><div class="chead"><h2>Live chat</h2><span class="chip" id="pres" data-up="false">Connecting</span></div><div class="msgs" id="msgs"></div>
   <form id="cf"><input class="field" id="ci" placeholder="${S.role === "agent" ? "Reply to the customer" : "Ask about your order"}" autocomplete="off" maxlength="500"><button class="btn">Send</button></form></section>
-  <aside class="panel sum"><h2>Order summary</h2><table>${o.items.map((i) => `<tr><td>${esc(i.name)}<small>${i.qty} × ${rs(i.price)}</small></td><td>${rs(i.qty * i.price)}</td></tr>`).join("")}<tr class="t"><td>Total</td><td>${rs(o.total)}</td></tr></table></aside></div>`;
+  <aside class="panel sum"><h2>Order summary</h2><table>${o.items.map((i) => `<tr><td><div class="it"><img class="th" src="images/${i.sku}.svg" alt=""><span>${esc(i.name)}<small>${i.qty} × ${rs(i.price)}</small></span></div></td><td>${rs(i.qty * i.price)}</td></tr>`).join("")}<tr class="t"><td>Total</td><td>${rs(o.total)}</td></tr></table></aside></div>`;
   paint(o);
 }
 function paint(o) {
