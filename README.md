@@ -2,7 +2,7 @@
 
 CSC337 Lab 04. One Express server exposes REST, JSON-RPC 2.0, SSE and Socket.io. A static frontend (Customer and Support agent views) talks to all four.
 
-- **Frontend:** `https://YOUR-FRONTEND.vercel.app`
+- **Frontend:** `https://trackline-frontend-awt3.vercel.app/`
 - **Backend:** `"https://trackline-7pz2.onrender.com"`
 
 ## Run locally
