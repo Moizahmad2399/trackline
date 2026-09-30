@@ -139,7 +139,7 @@ ol small{color:rgba(241,244,238,.6);min-height:18px}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
 <script>
 // Set your deployed backend URL (Render/Railway) here, no trailing slash.
-const API = ["localhost", "127.0.0.1"].includes(location.hostname) ? "http://localhost:4000" : "https://YOUR-BACKEND.onrender.com";
+const API = ["localhost", "127.0.0.1"].includes(location.hostname) ? "http://localhost:4000" : "https://trackline-7pz2.onrender.com";
 
 const STEPS = [["placed","Placed"],["confirmed","Confirmed"],["packed","Packed"],["out_for_delivery","On the way"],["delivered","Delivered"]];
 const S = { role: "customer", orders: new Map(), sel: null, cart: {}, catalog: [], mine: JSON.parse(localStorage.mine || "[]") };
