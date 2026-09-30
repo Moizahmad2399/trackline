@@ -8,133 +8,182 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--chalk:#F1F4EE;--card:#FAFBF7;--ink:#12241F;--muted:#5E6F68;--line:#D3DAD0;--pine:#1D5A4A;--soft:#DDEBE4;--gold:#F0B429;--coral:#D4462A;--mint:#7FD1B4;--display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;--body:"Figtree","Segoe UI",system-ui,sans-serif}
+:root{--chalk:#EDF1EC;--card:#fff;--ink:#0F211C;--muted:#62736C;--line:#DDE4DB;--pine:#1D5A4A;--soft:#E3F0EA;--gold:#F0B429;--coral:#D4462A;--mint:#7FD1B4;--display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;--body:"Figtree","Segoe UI",system-ui,sans-serif;--sh:0 1px 2px rgba(15,33,28,.05),0 10px 28px -14px rgba(15,33,28,.16)}
 *{box-sizing:border-box;margin:0}
 body{font:16px/1.5 var(--body);background:var(--chalk);color:var(--ink)}
 button,input{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--pine);outline-offset:2px}
-.tracker :focus-visible{outline-color:var(--gold)}
 small,.none{color:var(--muted);font-size:13px}
-.top{display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding:14px clamp(16px,3vw,32px);background:var(--card);border-bottom:1px solid var(--line)}
-.brand{display:flex;align-items:center;gap:10px;font:800 24px/1 var(--display);letter-spacing:-.02em}
-.seg{display:inline-flex;padding:3px;border:1px solid var(--line);border-radius:999px;background:var(--chalk)}
-.seg button{border:0;background:none;padding:7px 16px;border-radius:999px;cursor:pointer;font-weight:600;color:var(--muted)}
-.seg [aria-selected=true]{background:var(--ink);color:var(--chalk)}
-.conn{margin-left:auto;display:flex;gap:14px;font-size:13px;color:var(--muted)}
-.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
-.chip::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--coral)}
-.chip[data-up=true]::before{background:#2E9E7A}
-#alert{display:flex;justify-content:space-between;gap:12px;padding:10px clamp(16px,3vw,32px);font-weight:600;background:var(--soft)}
-#alert[hidden]{display:none}
-#alert[data-level=warning]{background:#FBEBC0}
-#alert[data-level=success]{background:#CDEBDD}
-#alert button{background:none;border:0;cursor:pointer;font-size:20px;line-height:1}
-.layout{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:24px;max-width:1280px;margin:0 auto;padding:24px clamp(16px,3vw,32px) 48px;align-items:start}
-@media(max-width:860px){.layout{grid-template-columns:1fr}}
-.side,.detail{display:grid;gap:20px;min-width:0}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
-.panel h2{font:700 18px/1.2 var(--display);margin-bottom:12px}
-body[data-role=agent] .cust,body[data-role=customer] .agent{display:none}
 ul{list-style:none;padding:0}
-#catalog li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.app{display:grid;grid-template-columns:270px minmax(0,1fr);min-height:100vh}
+.nav{position:sticky;top:0;height:100vh;overflow-y:auto;background:linear-gradient(180deg,#0F211C,#173A31);color:#EAF2EE;padding:26px 20px;display:flex;flex-direction:column;gap:6px}
+.brand{display:flex;align-items:center;gap:10px;font:800 26px/1 var(--display);letter-spacing:-.03em;margin-bottom:14px}
+.cap{margin:18px 0 6px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(234,242,238,.5)}
+.seg{display:grid;gap:6px}
+.seg button{border:0;background:none;text-align:left;padding:11px 14px;border-radius:12px;cursor:pointer;font-weight:600;color:rgba(234,242,238,.72);transition:background .15s}
+.seg button:hover{background:rgba(255,255,255,.06)}
+.seg [aria-selected=true]{background:rgba(255,255,255,.12);color:#fff;box-shadow:inset 3px 0 0 var(--gold)}
+.conn{display:grid;gap:9px}
+.chip{display:flex;align-items:center;gap:9px;font-size:14px;color:rgba(234,242,238,.85)}
+.chip::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--coral);box-shadow:0 0 0 3px rgba(212,70,42,.22)}
+.chip[data-up=true]::before{background:#3FD19B;box-shadow:0 0 0 3px rgba(63,209,155,.22)}
+.chead .chip{display:inline-flex;color:var(--muted)}
+.nav .feed li{display:flex;justify-content:space-between;gap:8px;padding:8px 0 8px 10px;border-left:3px solid rgba(255,255,255,.15);font-size:13px;color:#EAF2EE}
+.nav .feed li+li{margin-top:6px}
+.nav .feed small,.nav .none{color:rgba(234,242,238,.5)}
+.nav .feed li[data-l=info]{border-color:var(--mint)}
+.nav .feed li[data-l=warning]{border-color:var(--gold)}
+.nav .feed li[data-l=success]{border-color:#3FD19B}
+.main{padding:30px clamp(16px,3vw,40px) 56px;min-width:0;max-width:1260px;width:100%}
+#alert{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px;padding:12px 16px;border-radius:14px;font-weight:600;background:var(--soft);border-left:4px solid var(--pine);box-shadow:var(--sh)}
+#alert[hidden]{display:none}
+#alert[data-level=warning]{background:#FCF1CF;border-color:var(--gold)}
+#alert[data-level=success]{background:#D5F0E4;border-color:#2E9E7A}
+#alert button{background:none;border:0;cursor:pointer;font-size:20px;line-height:1}
+.pagehead h1{font:800 clamp(28px,4vw,38px)/1.1 var(--display);letter-spacing:-.035em}
+.pagehead p{color:var(--muted);margin:6px 0 22px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) minmax(0,1.8fr);gap:14px;margin-bottom:24px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 18px;box-shadow:var(--sh)}
+.stat small{display:block;font-weight:600}
+.stat strong{display:block;font:800 clamp(20px,2vw,26px)/1.2 var(--display);letter-spacing:-.02em}
+.stat::before{display:grid;place-items:center;width:38px;height:38px;margin-bottom:12px;border-radius:11px;font-weight:800;font-size:17px}
+.stat:nth-child(1)::before{content:"≡";background:var(--soft);color:var(--pine)}
+.stat:nth-child(2)::before{content:"↻";background:#FCF1CF;color:#8A5F00}
+.stat:nth-child(3)::before{content:"✓";background:#D5F0E4;color:#1F7A5B}
+.stat:nth-child(4)::before{content:"Rs";background:var(--ink);color:var(--gold);font-size:13px}
+.stat:nth-child(5)::before{display:none}
+.bar{display:flex;height:14px;border-radius:7px;overflow:hidden;gap:2px;margin:14px 0 12px}
+.bar i{display:block}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--muted)}
+.legend b{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+.layout{display:grid;grid-template-columns:minmax(300px,360px) minmax(0,1fr);gap:24px;align-items:start}
+.side,.detail{display:grid;gap:20px;min-width:0}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--sh)}
+.panel h2{font:700 18px/1.2 var(--display);margin-bottom:14px}
+body[data-role=agent] .cust,body[data-role=customer] .agent{display:none}
+#catalog li{display:grid;grid-template-columns:42px 1fr auto;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
 #catalog li:first-child{border-top:0}
-#catalog strong{display:block;font-weight:600}
-.step{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.ph{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font:800 18px var(--display);background:linear-gradient(135deg,var(--soft),#CBE3D8);color:var(--pine)}
+#catalog strong{display:block;font-weight:600;line-height:1.3}
+.step{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:999px;overflow:hidden}
 .step button{width:30px;height:30px;border:0;background:var(--chalk);cursor:pointer;font-size:16px}
+.step button:hover{background:var(--soft)}
 .step output{min-width:28px;text-align:center;font-weight:600}
 .cart{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);display:grid;gap:10px}
-.cart div{display:flex;justify-content:space-between;font-weight:600}
-.field{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.cart div{display:flex;justify-content:space-between;font-weight:700}
+.field{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:12px;background:#F8FAF7}
+.field:focus{background:#fff;border-color:var(--pine);outline:0;box-shadow:0 0 0 3px var(--soft)}
 .inline{display:flex;gap:8px;margin-bottom:12px}
-.btn{border:1px solid transparent;border-radius:10px;padding:10px 16px;font-weight:600;cursor:pointer;background:var(--pine);color:#fff}
+.btn{border:1px solid transparent;border-radius:12px;padding:11px 18px;font-weight:600;cursor:pointer;background:var(--pine);color:#fff;transition:transform .12s,filter .12s}
+.btn:hover:not(:disabled){filter:brightness(1.12);transform:translateY(-1px)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .btn.ghost{background:none;color:inherit;border-color:var(--line)}
 .btn.go{background:var(--gold);color:var(--ink)}
-#orders{display:grid;gap:6px}
-.row{width:100%;display:grid;grid-template-columns:1fr auto;gap:2px 10px;text-align:left;padding:10px 12px;border:1px solid var(--line);border-left-width:4px;border-radius:12px;background:#fff;cursor:pointer}
+#orders{display:grid;gap:8px}
+.row{width:100%;display:grid;grid-template-columns:1fr auto;gap:2px 10px;text-align:left;padding:12px 14px;border:1px solid var(--line);border-left-width:4px;border-radius:14px;background:#fff;cursor:pointer;transition:border-color .15s,transform .15s}
+.row:hover{border-color:var(--pine);transform:translateX(2px)}
 .row[aria-current=true]{border-color:var(--pine);background:var(--soft)}
 .row b{font:700 16px var(--display)}
 .pill{justify-self:end;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;background:var(--soft);color:var(--pine)}
-.pill[data-s=out_for_delivery]{background:#FBEBC0;color:#6B4B00}
+.pill[data-s=out_for_delivery]{background:#FCF1CF;color:#6B4B00}
 .pill[data-s=delivered]{background:var(--pine);color:#fff}
 .pill[data-s=cancelled]{background:#F8DDD5;color:#7C2412}
-.tracker{background:var(--ink);color:var(--chalk);border-radius:20px;padding:clamp(20px,3vw,32px)}
+.tracker{position:relative;overflow:hidden;background:radial-gradient(800px 320px at 100% -30%,rgba(127,209,180,.25),transparent 60%),linear-gradient(160deg,#0F211C,#173A31);color:#EAF2EE;border-radius:24px;padding:clamp(22px,3vw,36px);box-shadow:0 24px 44px -26px rgba(15,33,28,.7)}
+.tracker :focus-visible{outline-color:var(--gold)}
 .thead{display:flex;justify-content:space-between;gap:16px}
-.tracker h2{font:800 clamp(30px,5vw,44px)/1 var(--display);letter-spacing:-.03em}
-.tracker p{color:rgba(241,244,238,.75)}
-.tracker .pill{background:var(--gold);color:var(--ink);font-size:13px;padding:5px 12px;align-self:flex-start}
+.tracker h2{font:800 clamp(32px,5vw,48px)/1 var(--display);letter-spacing:-.035em;margin:0}
+.tracker p{color:rgba(234,242,238,.75)}
+.tracker .pill{background:var(--gold);color:var(--ink);font-size:13px;padding:6px 14px;align-self:flex-start}
 .tracker .pill[data-s=delivered]{background:var(--mint)}
 .tracker .pill[data-s=cancelled]{background:var(--coral);color:#fff}
-.route{--p:0;position:relative;margin:36px 0 26px}
-.rail{position:absolute;left:10%;right:10%;top:9px;height:4px;border-radius:4px;background:rgba(255,255,255,.16)}
-.rail i{position:absolute;inset:0 auto 0 0;width:calc(var(--p)*100%);background:var(--mint);border-radius:4px;transition:width .9s cubic-bezier(.4,0,.2,1)}
-.rail b{position:absolute;z-index:2;top:50%;left:calc(var(--p)*100%);width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;background:var(--gold);border:4px solid var(--ink);box-shadow:0 0 0 2px var(--gold);transition:left .9s cubic-bezier(.4,0,.2,1)}
+.route{--p:0;position:relative;margin:40px 0 28px}
+.rail{position:absolute;left:10%;right:10%;top:8px;height:6px;border-radius:6px;background:rgba(255,255,255,.14)}
+.rail i{position:absolute;inset:0 auto 0 0;width:calc(var(--p)*100%);background:linear-gradient(90deg,#4DBB98,var(--mint));border-radius:6px;transition:width .9s cubic-bezier(.4,0,.2,1)}
+.rail b{position:absolute;z-index:2;top:50%;left:calc(var(--p)*100%);width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:var(--gold);border:5px solid #12302A;box-shadow:0 0 0 2px var(--gold);transition:left .9s cubic-bezier(.4,0,.2,1)}
 .dead .rail i{background:var(--coral)}
 .dead .rail b{background:var(--coral);box-shadow:0 0 0 2px var(--coral)}
 .route[data-status=out_for_delivery] .rail b{animation:pulse 1.8s ease-out infinite}
-@keyframes pulse{to{box-shadow:0 0 0 2px var(--gold),0 0 0 16px rgba(240,180,41,0)}}
+@keyframes pulse{to{box-shadow:0 0 0 2px var(--gold),0 0 0 18px rgba(240,180,41,0)}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 ol{list-style:none;padding:0;display:grid;grid-template-columns:repeat(5,1fr)}
-ol li{display:grid;justify-items:center;gap:6px;text-align:center;font-weight:600;font-size:14px;color:rgba(241,244,238,.55)}
-ol li.done,ol li.now{color:var(--chalk)}
-ol small{color:rgba(241,244,238,.6);min-height:18px}
-.dot{position:relative;z-index:1;width:22px;height:22px;border-radius:50%;background:var(--ink);border:3px solid rgba(255,255,255,.25)}
+ol li{display:grid;justify-items:center;gap:6px;text-align:center;font-weight:600;font-size:14px;color:rgba(234,242,238,.5)}
+ol li.done,ol li.now{color:#fff}
+ol small{color:rgba(234,242,238,.6);min-height:18px}
+.dot{position:relative;z-index:1;width:22px;height:22px;border-radius:50%;background:#12302A;border:3px solid rgba(255,255,255,.22)}
 .done .dot{background:var(--mint);border-color:var(--mint)}
-.tfoot{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.14);padding-top:18px}
-.tfoot strong{font:700 22px var(--display)}
+.tfoot{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.12);padding-top:20px}
 .acts{display:flex;gap:10px;flex-wrap:wrap}
-.tracker .ghost{border-color:rgba(255,255,255,.35)}
+.tracker .ghost{border-color:rgba(255,255,255,.3)}
+.split{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:20px;align-items:start}
 .chat{padding:0;overflow:hidden}
-.chead{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+.chead{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line)}
 .chead h2{margin:0}
-.msgs{height:320px;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:8px;background:#fff}
-.bubble{max-width:75%;padding:8px 12px;border-radius:14px;overflow-wrap:anywhere}
+.msgs{height:340px;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:8px;background:#F6F8F5}
+.bubble{max-width:78%;padding:9px 13px;border-radius:16px;overflow-wrap:anywhere;box-shadow:0 1px 2px rgba(15,33,28,.06)}
 .bubble.mine{align-self:flex-end;background:var(--pine);color:#fff;border-bottom-right-radius:4px}
-.bubble.theirs{align-self:flex-start;background:var(--soft);border-bottom-left-radius:4px}
-.bubble.system{align-self:center;background:none;color:var(--muted);font-size:13px;padding:2px}
+.bubble.theirs{align-self:flex-start;background:#fff;border-bottom-left-radius:4px}
+.bubble.system{align-self:center;background:none;box-shadow:none;color:var(--muted);font-size:13px;padding:2px}
 .bubble b{display:block;font-size:12px;opacity:.75}
 .bubble time{display:block;font-size:11px;opacity:.65}
-#cf{display:flex;gap:8px;padding:12px 18px;border-top:1px solid var(--line)}
-.empty{padding:56px 24px;text-align:center;border:1.5px dashed var(--line);border-radius:20px;color:var(--muted)}
+#cf{display:flex;gap:8px;padding:14px 20px;border-top:1px solid var(--line)}
+.sum table{width:100%;border-collapse:collapse;font-size:14px}
+.sum td{padding:10px 0;border-top:1px solid var(--line);vertical-align:top}
+.sum td:last-child{text-align:right;font-weight:600;white-space:nowrap}
+.sum small{display:block}
+.sum .t td{font:700 17px var(--display)}
+.empty{padding:64px 24px;text-align:center;border:1.5px dashed #C4CEC2;border-radius:24px;color:var(--muted);background:rgba(255,255,255,.5)}
+.empty::before{content:"◎";display:block;font-size:38px;color:var(--pine);margin-bottom:8px}
 .empty h2{font:700 24px var(--display);color:var(--ink);margin-bottom:6px}
-#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--ink);color:var(--chalk);padding:10px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;max-width:90vw}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--ink);color:var(--chalk);padding:11px 20px;border-radius:14px;opacity:0;pointer-events:none;transition:.25s;max-width:90vw;box-shadow:var(--sh);z-index:9}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 #toast[data-err=true]{background:var(--coral)}
+@media(max-width:1100px){.layout,.split{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat:nth-child(5){grid-column:1/-1}}
+@media(max-width:900px){.app{grid-template-columns:1fr}.nav{position:static;height:auto}}
 </style>
 </head>
 <body data-role="customer">
-<header class="top">
-  <div class="brand"><svg width="34" height="20" viewBox="0 0 34 20" aria-hidden="true"><circle cx="5" cy="10" r="4" fill="#1D5A4A"/><path d="M9 10h16" stroke="#1D5A4A" stroke-width="2"/><circle cx="29" cy="10" r="4" fill="#F0B429"/></svg>Trackline</div>
+<div class="app">
+<aside class="nav">
+  <div class="brand"><svg width="36" height="20" viewBox="0 0 34 20" aria-hidden="true"><circle cx="5" cy="10" r="4" fill="#7FD1B4"/><path d="M9 10h16" stroke="#7FD1B4" stroke-width="2"/><circle cx="29" cy="10" r="4" fill="#F0B429"/></svg>Trackline</div>
+  <p class="cap">View as</p>
   <div class="seg" role="tablist" aria-label="View as">
     <button role="tab" data-r="customer" aria-selected="true">Customer</button>
     <button role="tab" data-r="agent" aria-selected="false">Support agent</button>
   </div>
+  <p class="cap">System status</p>
   <div class="conn">
-    <span class="chip" id="c-api" data-up="false">API</span>
+    <span class="chip" id="c-api" data-up="false">REST API</span>
     <span class="chip" id="c-ws" data-up="false">WebSocket</span>
-    <span class="chip" id="c-sse" data-up="false">Live alerts</span>
+    <span class="chip" id="c-sse" data-up="false">Live alerts (SSE)</span>
   </div>
-</header>
-<div id="alert" hidden role="status"><span id="alertText"></span><button aria-label="Dismiss alert" onclick="this.parentNode.hidden=true">×</button></div>
-<main class="layout">
-  <aside class="side">
-    <section class="panel cust">
-      <h2>Shop</h2>
-      <ul id="catalog"></ul>
-      <div class="cart">
-        <input class="field" id="name" placeholder="Your name" autocomplete="name">
-        <div><span>Total</span><span id="total">Rs 0</span></div>
-        <button class="btn" id="place" disabled>Place order</button>
-      </div>
-    </section>
-    <section class="panel">
-      <h2 id="otitle">Orders</h2>
-      <form id="track" class="inline cust"><input class="field" id="tid" placeholder="Track by ID, e.g. ORD-1001"><button class="btn ghost">Track</button></form>
-      <ul id="orders"></ul>
-    </section>
-  </aside>
-  <section class="detail" id="detail"></section>
-</main>
+  <p class="cap">Live activity</p>
+  <ul class="feed" id="feed"><li class="none">Waiting for events.</li></ul>
+</aside>
+<div class="main">
+  <div id="alert" hidden role="status"><span id="alertText"></span><button aria-label="Dismiss alert" onclick="this.parentNode.hidden=true">×</button></div>
+  <div class="pagehead"><h1 id="ptitle"></h1><p id="psub"></p></div>
+  <div class="stats" id="stats"></div>
+  <div class="layout">
+    <aside class="side">
+      <section class="panel cust">
+        <h2>Shop</h2>
+        <ul id="catalog"></ul>
+        <div class="cart">
+          <input class="field" id="name" placeholder="Your name" autocomplete="name">
+          <div><span>Total</span><span id="total">Rs 0</span></div>
+          <button class="btn" id="place" disabled>Place order</button>
+        </div>
+      </section>
+      <section class="panel">
+        <h2 id="otitle">Orders</h2>
+        <form id="track" class="inline cust"><input class="field" id="tid" placeholder="Track by ID, e.g. ORD-1001"><button class="btn ghost">Track</button></form>
+        <ul id="orders"></ul>
+      </section>
+    </aside>
+    <section class="detail" id="detail"></section>
+  </div>
+</div>
+</div>
 <div id="toast" role="status"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
 <script>
@@ -196,17 +245,33 @@ es.onopen = () => up("sse", true);
 es.onerror = () => up("sse", false);
 es.addEventListener("alert", (e) => {
   const a = JSON.parse(e.data), b = $("#alert");
-  b.hidden = false; b.dataset.level = a.level; $("#alertText").textContent = a.message;
+  feed(a.message, a.level); b.hidden = false; b.dataset.level = a.level; $("#alertText").textContent = a.message;
   clearTimeout(b.h); b.h = setTimeout(() => (b.hidden = true), 9000);
 });
 
 /* ---- views ---- */
 function shop() {
-  $("#catalog").innerHTML = S.catalog.map((p) => `<li><div><strong>${esc(p.name)}</strong><small>${rs(p.price)}</small></div><div class="step"><button data-s="${p.sku}" data-d="-1" aria-label="Remove one ${esc(p.name)}">−</button><output>${S.cart[p.sku] || 0}</output><button data-s="${p.sku}" data-d="1" aria-label="Add one ${esc(p.name)}">+</button></div></li>`).join("");
+  $("#catalog").innerHTML = S.catalog.map((p) => `<li><span class="ph">${esc(p.name[0])}</span><div><strong>${esc(p.name)}</strong><small>${rs(p.price)}</small></div><div class="step"><button data-s="${p.sku}" data-d="-1" aria-label="Remove one ${esc(p.name)}">−</button><output>${S.cart[p.sku] || 0}</output><button data-s="${p.sku}" data-d="1" aria-label="Add one ${esc(p.name)}">+</button></div></li>`).join("");
   $("#total").textContent = rs(total());
   $("#place").disabled = !total();
 }
+const F = [];
+function feed(t, l) {
+  F.unshift({ t, l, at: new Date() }); if (F.length > 6) F.pop();
+  $("#feed").innerHTML = F.map((f) => `<li data-l="${f.l}"><span>${esc(f.t)}</span><small>${hm(f.at)}</small></li>`).join("");
+}
+function stats() {
+  const v = [...S.orders.values()].filter((o) => S.role === "agent" || S.mine.includes(o.id));
+  const n = (k) => v.filter((o) => o.status === k).length;
+  const live = v.filter((o) => !["delivered", "cancelled"].includes(o.status)).length;
+  const val = v.filter((o) => o.status !== "cancelled").reduce((s, o) => s + o.total, 0);
+  const cards = [["Total orders", v.length], ["In progress", live], ["Delivered", n("delivered")], [S.role === "agent" ? "Revenue" : "Your spend", rs(val)]];
+  const seg = [["placed", "#9FB3AA"], ["confirmed", "#5FA893"], ["packed", "#1D5A4A"], ["out_for_delivery", "#F0B429"], ["delivered", "#2E9E7A"], ["cancelled", "#D4462A"]].filter((x) => n(x[0]));
+  $("#stats").innerHTML = cards.map((c) => `<div class="stat"><small>${c[0]}</small><strong>${c[1]}</strong></div>`).join("")
+    + `<div class="stat"><small>Order pipeline</small><div class="bar">${seg.map((x) => `<i style="flex:${n(x[0])};background:${x[1]}" title="${lab(x[0])}"></i>`).join("") || '<i style="flex:1;background:var(--line)"></i>'}</div><div class="legend">${seg.map((x) => `<span><b style="background:${x[1]}"></b>${lab(x[0])} ${n(x[0])}</span>`).join("") || "No orders yet"}</div></div>`;
+}
 function list() {
+  stats();
   const all = [...S.orders.values()].filter((o) => S.role === "agent" || S.mine.includes(o.id)).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   $("#otitle").textContent = S.role === "agent" ? "All orders" : "Your orders";
   $("#orders").innerHTML = all.map((o) => `<li><button class="row" data-id="${o.id}" aria-current="${o.id === S.sel}"><b>${o.id}</b><span class="pill" data-s="${o.status}">${lab(o.status)}</span><small>${esc(o.customerName)}</small><small>${rs(o.total)}</small></button></li>`).join("") || `<li class="none">No orders yet.</li>`;
@@ -219,9 +284,10 @@ function detail() {
   }
   b.innerHTML = `<article class="tracker"><div class="thead"><div><h2>${o.id}</h2><p>${esc(o.customerName)}, placed at ${hm(o.createdAt)}</p></div><span class="pill" id="pill"></span></div>
   <div class="route" id="route"><div class="rail"><i></i><b></b></div><ol>${STEPS.map((s) => `<li><span class="dot"></span><span>${s[1]}</span><small></small></li>`).join("")}</ol></div>
-  <div class="tfoot"><div><p>${o.items.map((i) => `${i.qty} × ${esc(i.name)}`).join(", ")}</p><strong>${rs(o.total)}</strong></div><div class="acts" id="acts"></div></div></article>
-  <section class="panel chat"><div class="chead"><h2>Live chat</h2><span class="chip" id="pres" data-up="false">Connecting</span></div><div class="msgs" id="msgs"></div>
-  <form id="cf"><input class="field" id="ci" placeholder="${S.role === "agent" ? "Reply to the customer" : "Ask about your order"}" autocomplete="off" maxlength="500"><button class="btn">Send</button></form></section>`;
+  <div class="tfoot"><p>${o.items.reduce((s, i) => s + i.qty, 0)} items</p><div class="acts" id="acts"></div></div></article>
+  <div class="split"><section class="panel chat"><div class="chead"><h2>Live chat</h2><span class="chip" id="pres" data-up="false">Connecting</span></div><div class="msgs" id="msgs"></div>
+  <form id="cf"><input class="field" id="ci" placeholder="${S.role === "agent" ? "Reply to the customer" : "Ask about your order"}" autocomplete="off" maxlength="500"><button class="btn">Send</button></form></section>
+  <aside class="panel sum"><h2>Order summary</h2><table>${o.items.map((i) => `<tr><td>${esc(i.name)}<small>${i.qty} × ${rs(i.price)}</small></td><td>${rs(i.qty * i.price)}</td></tr>`).join("")}<tr class="t"><td>Total</td><td>${rs(o.total)}</td></tr></table></aside></div>`;
   paint(o);
 }
 function paint(o) {
@@ -264,6 +330,8 @@ async function sync() {
 }
 function setRole(r) {
   S.role = r; S.sel = null; document.body.dataset.role = r;
+  $("#ptitle").textContent = r === "agent" ? "Support console" : "Your dashboard";
+  $("#psub").textContent = r === "agent" ? "Move orders forward and reply to customers live." : "Shop, track your orders and chat with support in real time.";
   document.querySelectorAll("[data-r]").forEach((b) => b.setAttribute("aria-selected", b.dataset.r === r));
   socket.emit("leave_order_room");
   socket.emit(r === "agent" ? "agent_join" : "agent_leave");
