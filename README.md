@@ -1,4 +1,13 @@
 # Trackline: real-time order tracking and live support
+## Screenshots
+<img width="1892" height="897" alt="image" src="https://github.com/user-attachments/assets/6b563736-5c00-49e0-8b55-4b7556d261a0" />
+
+<img width="1912" height="907" alt="image" src="https://github.com/user-attachments/assets/9be66861-66f5-45cc-a4d0-f2f97810029c" />
+
+<img width="1897" height="905" alt="image" src="https://github.com/user-attachments/assets/784d4336-4054-41ec-9f1d-8543a1895214" />
+
+<img width="1895" height="897" alt="image" src="https://github.com/user-attachments/assets/b244b9f1-45f3-4af0-a3b3-d32d3a70cd12" />
+
 
 CSC337 Lab 04. One Express server exposes REST, JSON-RPC 2.0, SSE and Socket.io. A static frontend (Customer and Support agent views) talks to all four.
 
